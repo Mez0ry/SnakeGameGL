@@ -16,6 +16,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PRIVATE _DEBUG)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_definitions(${PROJECT_NAME} PRIVATE _RELEASE)
+else()
+    set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
 set(PROCESSOR_ARHITECTURE_TYPE "UNKNOWN")

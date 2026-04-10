@@ -77,11 +77,12 @@ int main()
 
     Shader shader("C:/Users/aleks/source/vscode_repos/SnakeGameOpengl/shader.shader");
     shader.UseShader();
+
     Texture texture("C:\\Users\\aleks\\source\\vscode_repos\\SnakeGameOpengl\\google.png");
-    texture.Bind();
+    
     Uniform::SetShaderUniformInt1(shader, "u_texture", 0);
     Uniform::SetShaderUniformFloat4(shader, "u_Color", 1, 0, 0, 1);
-
+    
     VertexArray va;
     va.Bind();
     VertexBufferLayout vb_layout;
@@ -108,7 +109,6 @@ int main()
             y -= offset_factor;
             Uniform::SetShaderUniformFloat2(shader, "u_pos_offset", x, y);
         }
-        shader.UseShader();
 
         texture.Bind();
         renderer.Render(va, ib, shader);
