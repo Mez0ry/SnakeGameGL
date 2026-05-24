@@ -3,16 +3,17 @@
 #version 330 core
 
 layout(location = 0) in vec2 in_position;
-layout(location = 1) in vec2 in_texCoords;
-
+layout(location = 1) in vec3 in_normals;
+layout(location = 2) in vec2 in_texCoords;
 out vec2 v_texCoord;
 
-uniform vec2 u_pos_offset;
+uniform mat4 u_Projection;
+uniform vec2 u_PosOffset;
 
 void main()
 {
   gl_Position = vec4(in_position, 0.0, 1.0);
-  v_texCoord = in_texCoords + u_pos_offset;
+  v_texCoord = in_texCoords + u_PosOffset;
 }
 
 ##Fragment Shader

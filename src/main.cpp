@@ -6,7 +6,7 @@
 
 #include "VertexArray.hpp"
 #include "VertexBuffer.hpp"
-#include "VertexBufferLayout.hpp"
+#include "BufferLayout.hpp"
 #include "IndexBuffer.hpp"
 
 #include "Window.hpp"
@@ -16,6 +16,8 @@
 #include "Texture.hpp"
 
 #include "Color.hpp"
+#include "Vertex.hpp"
+#include <glm/ext.hpp>
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -60,22 +62,14 @@ int main()
 
     glViewport(0, 0, WIDTH, HEIGHT);
 
-    float verticies[] ={
-        -0.5f, -0.5f, /*texture:*/ 0.0f, 0.0f,
-        0.5f, -0.5f,  /*texture:*/ 1.0f, 0.0f,
-        0.5f, 0.5f,  /*texture:*/ 1.0f, 1.0f,
-
-        -0.5f, 0.5f,  /*texture:*/ 0.0f, 1.0f,
-    };
-    
     unsigned int indicies[] = {
         0, 1, 2,
         2, 3, 0
     };
-
+    
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Shader shader("C:/Users/aleks/source/vscode_repos/SnakeGameOpengl/shader.shader");
+    Shader shader("../resources/shaders/shader.shader");
     shader.UseShader();
 
     Texture texture("C:\\Users\\aleks\\source\\vscode_repos\\SnakeGameOpengl\\google.png");
@@ -85,15 +79,24 @@ int main()
     
     VertexArray va;
     va.Bind();
-    VertexBufferLayout vb_layout;
-    vb_layout.Push<float>(2);
-    vb_layout.Push<float>(2);
+    BufferLayout vb_layout;
+    vb_layout.Push<Vertex2D>(false);
+    
+    std::vector<Vertex2D> verticies{
+        Vertex2D(glm::vec2(-0.5f, -0.5f), glm::vec3(0.f, 0.f, 0.f), glm::vec2(0.f, 0.f)),
+        Vertex2D(glm::vec2(0.5f, -0.5f), glm::vec3(0.f, 0.f, 0.f), glm::vec2(1.0f, 0.0f)),
+        Vertex2D(glm::vec2(0.5f, 0.5f), glm::vec3(0.f, 0.f, 0.f), glm::vec2(1.0f, 1.0f)),
+        Vertex2D(glm::vec2(-0.5f, 0.5f), glm::vec3(0.f, 0.f, 0.f), glm::vec2(0.0f, 1.0f))
+    };
 
-    va.AddBuffer(VertexBuffer(verticies, sizeof(verticies)), vb_layout);
+    VertexBuffer vertex_buffer(verticies);
+    va.AddBuffer(vb_layout);
 
     IndexBuffer ib(indicies, 6);
 
     Renderer renderer;
+
+    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);  
 
     float x{0}, y{};
     const float offset_factor = 0.01;
@@ -107,7 +110,7 @@ int main()
         
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             y -= offset_factor;
-            Uniform::SetShaderUniformFloat2(shader, "u_pos_offset", x, y);
+            Uniform::SetShaderUniformFloat2(shader, "u_PosOffset", x, y);
         }
 
         texture.Bind();
